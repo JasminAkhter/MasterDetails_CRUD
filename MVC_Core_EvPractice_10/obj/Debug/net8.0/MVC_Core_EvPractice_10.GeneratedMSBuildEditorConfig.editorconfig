@@ -26,10 +26,6 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = D:\Jasmin ASP.Net\All Modules\09. ASP .Net_Core_MVC & EF_Core_10\Practice_Core_MVC\MVC_Core_EvPractice_10\MVC_Core_EvPractice_10
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/Jasmin ASP.Net/All Modules/09. ASP .Net_Core_MVC & EF_Core_10/Practice_Core_MVC/MVC_Core_EvPractice_10/MVC_Core_EvPractice_10/Views/Customers/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXEVkaXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/Jasmin ASP.Net/All Modules/09. ASP .Net_Core_MVC & EF_Core_10/Practice_Core_MVC/MVC_Core_EvPractice_10/MVC_Core_EvPractice_10/Views/Customers/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
