@@ -1,42 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Customer Delivery Management System - README</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f7f9fc;
-            line-height: 1.6;
-        }
-        h1, h2, h3 {
-            color: #004085;
-        }
-        code, pre {
-            background-color: #e2e3e5;
-            padding: 10px;
-            display: block;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 20px 0;
-        }
-        table th, table td {
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
-        table th {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-
 <h1>📦 Customer Delivery Management System - ASP.NET Core MVC</h1>
 
 <p>This is an ASP.NET Core MVC application that allows you to manage <strong>customers</strong> along with their associated <strong>delivery addresses</strong>. The system supports <strong>CRUD operations</strong>, dynamic form inputs, and a Bootstrap-powered responsive UI.</p>
@@ -160,6 +121,3 @@ document.getElementById("addRowBtn").addEventListener("click", function () {
 
 <h2>📜 License</h2>
 <p>This project is developed for learning/demo purpose. Feel free to use or modify as needed.</p>
-
-</body>
-</html>
