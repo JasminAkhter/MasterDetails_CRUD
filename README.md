@@ -67,16 +67,6 @@
     <li>File input for photo</li>
 </ul>
 
-<pre><code>// JavaScript snippet
-document.getElementById("addRowBtn").addEventListener("click", function () {
-    const tbody = document.getElementById("detailsTbody");
-    const index = tbody.children.length;
-    const row = document.createElement("tr");
-    row.innerHTML = `&lt;td&gt;&lt;input name="DeliveryAddresses[${index}].ContactPerson" /&gt;&lt;/td&gt; ... `;
-    tbody.appendChild(row);
-});
-</code></pre>
-
 <h2>🔌 Connection String</h2>
 <pre><code>{
   "ConnectionStrings": {
