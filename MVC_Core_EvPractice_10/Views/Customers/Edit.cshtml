@@ -1,0 +1,317 @@
+﻿@* public class CustomersController : Controller
+{
+    private readonly AppDbContext _context;
+
+    public CustomersController(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        return View(await _context.Customers.ToListAsync());
+    }
+
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(Customer customer)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Add(customer);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        return View(customer);
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var customer = await _context.Customers.FindAsync(id);
+        if (customer != null)
+        {
+            _context.Customers.Remove(customer);
+        }
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var customer = await _context.Customers.FindAsync(id);
+        if (customer == null)
+        {
+            return NotFound();
+        }
+
+        // New
+        var customers = await _context.Customers.Include(x => x.DeliveryAddresses).ToListAsync();
+
+        ViewBag.EditCustomer = customer; // Pass selected customer for editing
+
+        return View("Index", customers);
+
+        //return View(customer);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, Customer customer)
+    {
+        if (id != customer.CustomerId)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                // New
+                var existingCustomer = await _context.Customers.Include(c => c.DeliveryAddresses).FirstOrDefaultAsync(c => c.CustomerId == id);
+                
+                _context.Entry(existingCustomer).CurrentValues.SetValues(customer);
+
+                if (existingCustomer.DeliveryAddresses != null)
+                {
+                    _context.DeliveryAddresses.RemoveRange(existingCustomer.DeliveryAddresses);
+                }
+
+                if (customer.DeliveryAddresses != null && customer.DeliveryAddresses.Any())
+                {
+                    existingCustomer.DeliveryAddresses = customer.DeliveryAddresses;
+                }
+                // New
+
+                //_context.Update(customer);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CustomerExists(customer.CustomerId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        return View(customer);
+    }
+
+    private bool CustomerExists(int id)
+    {
+        return _context.Customers.Any(e => e.CustomerId == id);
+    }
+}
+
+
+
+
+
+@model MVC_Core_EvPractice_02.Models.Customer
+
+@{
+    var actionName = Model.CustomerId != 0 ? "Edit" : "Create";
+}
+
+<h3>Add Customer</h3>
+
+<form asp-action="@actionName">
+    <input type="hidden" asp-for="CustomerId" />
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CustomerName" class="control-label"></label>
+                <input asp-for="CustomerName" class="form-control" />
+                <span asp-validation-for="CustomerName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BusinessStart" class="control-label"></label>
+                <input type="date" asp-for="BusinessStart" class="form-control" />
+                <span asp-validation-for="BusinessStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreditLimit" class="control-label"></label>
+                <input type="number" asp-for="CreditLimit" class="form-control" />
+                <span asp-validation-for="CreditLimit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerType" class="control-label"></label>
+                <select asp-for="CustomerType" class="form-select">
+                    <option value="">--Select--</option>
+                    <option value="Dealer">Dealer</option>
+                    <option value="Retailer">Retailer</option>
+                    <option value="Corporate">Corporate</option>
+                </select>
+                <span asp-validation-for="CustomerType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Photo" class="control-label"></label>
+                <input type="file" asp-for="Photo" class="form-control" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ContactPerson</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>
+                            <button type="button" id="addRowBtn" class="btn btn-outline-success">Add</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="detailsTbody">
+					@for (int i = 0; i < Model.DeliveryAddresses.Count; i++)
+					{
+						<tr>
+							<td>
+								<input type="text" name="DeliveryAddresses[@i].ContactPerson" class="form-control" value="@Model.DeliveryAddresses[i].ContactPerson" />
+							</td>
+							<td>
+								<input type="text" name="DeliveryAddresses[@i].Phone" class="form-control" value="@Model.DeliveryAddresses[i].Phone" />
+							</td>
+							<td>
+								<input type="text" name="DeliveryAddresses[@i].Address" class="form-control" value="@Model.DeliveryAddresses[i].Address" />
+							</td>
+							<td>
+								<button type="button" class="btn btn-outline-danger removeRowBtn">Remove</button>
+							</td>
+						</tr>
+					}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.getElementById("addRowBtn").addEventListener("click", function () {
+        const tbody = document.getElementById("detailsTbody");
+        const index = tbody.children.length;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><input type="text" name="DeliveryAddresses[${index}].ContactPerson" class="form-control" /></td>
+            <td><input type="text" name="DeliveryAddresses[${index}].Phone" class="form-control" /></td>
+            <td><input type="text" name="DeliveryAddresses[${index}].Address" class="form-control" /></td>
+            <td><button type="button" class="btn btn-outline-danger removeRowBtn">Remove</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    document.getElementById("detailsTbody").addEventListener("click", function (e) {
+        if (e.target && e.target.classList.contains("removeRowBtn")) {
+            e.target.closest("tr").remove();
+        }
+    });
+</script>
+
+
+
+
+
+
+@model IEnumerable<MVC_Core_EvPractice_10.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+    var formModel = ViewBag.EditCustomer as MVC_Core_EvPractice_02.Models.Customer ?? new MVC_Core_EvPractice_02.Models.Customer();
+}
+
+@Html.Partial("_Create", formModel)
+
+<h3>Customer Information</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BusinessStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreditLimit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Photo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BusinessStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreditLimit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Photo)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-outline-warning">Edit</a> 
+                <form asp-action="Delete" asp-controller="Customers" asp-route-id="@item.CustomerId">
+                    <button type="submit" class="btn-outline-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table> *@

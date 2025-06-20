@@ -1,0 +1,72 @@
+﻿@model IEnumerable<MVC_Core_EvPractice_10.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+    var formModel = ViewBag.EditCustomer as MVC_Core_EvPractice_10.Models.Customer ?? new MVC_Core_EvPractice_10.Models.Customer();
+}
+
+@Html.Partial("_Create", formModel)
+
+<h3 class="bg-info text-white text-center p-1">Customer Information</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BusinessStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreditLimit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Photo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BusinessStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreditLimit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Photo)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-outline-warning btn-sm m-1">EditInfo</a>
+                    <form asp-action="Delete" asp-controller="Customers" asp-route-id="@item.CustomerId">
+                        <button type="submit" class="btn-outline-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
