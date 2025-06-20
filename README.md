@@ -100,14 +100,5 @@
     <li>Reusable Razor Partial View</li>
 </ul>
 
-<h2>🔮 Future Enhancements</h2>
-<ul>
-    <li>Upload photo to file system or cloud</li>
-    <li>Search & pagination</li>
-    <li>Login/Auth system</li>
-    <li>Export to Excel/PDF</li>
-    <li>Real-time validations</li>
-</ul>
-
 <h2>📜 License</h2>
 <p>This project is developed for learning/demo purpose. Feel free to use or modify as needed.</p>
